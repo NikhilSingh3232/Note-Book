@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+      <link rel="stylesheet" href="todoList.css" />
+
+</head>
+<body>
+    <h1>TODO LIST</h1> 
+    <form>
+        <div>
+            <input type="text" value="" class="todoValue"/>
+            <button class="btn">Add ToDo</button>
+        </div>
+        <ol class="TodoLists"></ol>
+    </form>
+    <script>
+        const todoList = document.querySelector(".TodoLists");
+        const listValue = document.querySelector(".todoValue");
+        let todoListValue=[];
+
+        const getTodoListForms=()=>{
+            return JSON.parse(localStorage.getItem("todoData")) || [];
+        }
+
+
+
+        const addTodoListLocalStorage = (todo)=> {
+            return localStorage.setItem("todoData",JSON.stringify(todo));
+        }
+
+        const showTodoList= ()=>{
+            todoListValue=getTodoListForms();
+            todoListValue.forEach((curTodo) => {
+                const liElement=document.createElement("li");
+                liElement.innerHTML=curTodo;
+                todoList.append(liElement); 
+            });
+        };
+
+        const removeTodoList=(e)=>{
+            let curValue=e.target;
+            console.log(todoListValue);
+
+            updateTodoList= todoListValue.filter(
+                (curTodoValue)  =>  curTodoValue !== curValue.textContent
+            );
+            addTodoListLocalStorage(updateTodoList);
+            curValue.remove();
+            //todoList.innerHTML="";
+            //showTodoList();
+            console.log(updateTodoList);
+        }
+    
+        const addTodoList = (e) => {
+            e.preventDefault()
+
+            todoListValue=getTodoListForms()
+            let newTodo=listValue.value.trim();
+            newTodo = newTodo.charAt(0).toUpperCase() + newTodo.slice(1);
+
+
+            listValue.value=" ";
+
+            if(newTodo.length !== 0 &&! todoListValue.includes(newTodo)){
+            console.log( typeof (todoListValue))
+            todoListValue.push(newTodo);
+            todoListValue=[...new Set(todoListValue)];
+            addTodoListLocalStorage(todoListValue);
+            // console.log("Js is vast language");
+            const liElement=document.createElement("li");
+            liElement.innerHTML=newTodo;
+            todoList.append(liElement); 
+            }
+        };
+
+        showTodoList();
+    
+        document.querySelector(".btn").addEventListener("click", (e) => {
+            addTodoList(e);
+        })
+
+        todoList.addEventListener("click",(e)=>removeTodoList(e))
+    </script>
+    
+</body>
+</html>
